@@ -1,0 +1,4 @@
+14:24:32 Customer : Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+14:27:00 Customer : Pellentesque cursus maximus felis, pharetra porta purus aliquet viverra.
+14:27:47 Agent : Vestibulum tempor diam eu leo molestie eleifend.
+14:28:28 Customer : Contrary to popular belief, Lorem Ipsum is not simply random text.
