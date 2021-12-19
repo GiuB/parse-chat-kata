@@ -24,7 +24,7 @@ inquirer
   .then((answers) => {
     const sentenseParsed = new SentenseParser(answers.sentenseType).parse();
 
-    console.log(chalk.green('Parsed:'));
+    console.log(chalk.black.bgGreen('Parsed:') + ' 🤖');
     console.log(sentenseParsed);
   })
   .catch((error) => {

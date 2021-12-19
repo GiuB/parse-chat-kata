@@ -127,14 +127,8 @@ class SentenseParser {
         `./mock/step_${this.sentenseType}.txt`,
         'utf8',
       );
-      console.log(
-        chalk.cyan(`
-Mocked chat: 💬
---------
-${loadedChat}
---------
-      `),
-      );
+      console.log(`${chalk.black.bgCyan('Mocked chat:')} 💬`);
+      console.log(chalk.cyan(`-------\n${loadedChat}\n-------`));
       return loadedChat;
     } catch (err) {
       console.error(chalk.red(`${err}`));
