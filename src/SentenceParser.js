@@ -59,7 +59,6 @@ class SentenceParser {
 
     // Split sensente for multiple date in the same line:
     // .00:00:00
-
     let matchIndex;
     let lastIndex = 0;
     let newLine = line;
@@ -69,7 +68,7 @@ class SentenceParser {
 
       newLine = line.substring(
         lastIndex,
-        matchIndex > -1 ? matchIndex : undefined,
+        matchIndex > -1 ? matchIndex + 1 : undefined,
       );
 
       // rm first char if === "."
