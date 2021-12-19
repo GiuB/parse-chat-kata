@@ -1,5 +1,7 @@
-const inquirer = require('inquirer');
-const SentenseParser = require('./src/SentenseParser');
+import chalk from 'chalk';
+import inquirer from 'inquirer';
+
+import SentenseParser from './src/SentenseParser.js';
 
 inquirer
   .prompt([
@@ -8,6 +10,7 @@ inquirer
       name: 'sentenseType',
       message: 'Choose sentense parser',
       choices: [
+        { name: 'Step 0 (WRONG)', value: 0 },
         { name: 'Step 1 (single sentence)', value: 1 },
         { name: 'Step 2 (two sentences)', value: 2 },
         { name: 'Step 3 (two customer mentions as start)', value: 3 },
@@ -19,13 +22,17 @@ inquirer
     },
   ])
   .then((answers) => {
-    console.log(new SentenseParser(answers.sentenseType).parse());
+    const sentenseParsed = new SentenseParser(answers.sentenseType).parse();
+
+    console.log(chalk.green('Parsed:'));
+    console.log(sentenseParsed);
   })
   .catch((error) => {
-    console.log({ error });
-    if (error.isTtyError) {
-      // Prompt couldn't be rendered in the current environment
-    } else {
-      // Something else went wrong
-    }
+    let errOutput;
+
+    if (error.isTtyError)
+      errOutput = "Prompt couldn't be rendered in the current environment";
+    else errOutput = `Something went wrong, details: ${error}`;
+
+    console.error(chalk.red(errOutput));
   });

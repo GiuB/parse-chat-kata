@@ -1,5 +1,14 @@
-const fs = require('fs');
+import fs from 'fs';
+import chalk from 'chalk';
 
+/**
+ * Class for parsing the sentense and return {array} of {object}
+ *
+ * Usage:
+ * new SentenseParser(<sentenseTypeNumber>).parse();
+ *
+ * @constructor @param {number} sentenseTypeNumber
+ */
 class SentenseParser {
   sentenseType = 1;
 
@@ -7,16 +16,75 @@ class SentenseParser {
     this.sentenseType = sentenseType;
   }
 
-  chatLoader() {
-    try {
-      return fs.readFileSync(`./mock/step_${this.sentenseType}.txt`, 'utf8');
-    } catch (err) {
-      console.error(err);
-    }
+  /**
+   * Main method that retrieves array of structured objects
+   * @returns {array} of objects
+   */
+  parse() {
+    const chatText = this.chatLoader();
+    let chatTextSplitted;
 
-    return;
+    chatTextSplitted = chatText
+      .split('\n')
+      .map((line) => this.sentenseStrToObj(line))
+      .flat();
+
+    return chatTextSplitted;
   }
 
+  /**
+   * Parse line and return array of structured objects
+   * @param {string} line chat text line
+   * @returns {array} of objects
+   */
+  sentenseStrToObj(line) {
+    const lineSplittedByDate = this.sentenseSplitByDate(line);
+    const sentensesObj = lineSplittedByDate.map((l) => this.defaultStrToObj(l));
+
+    // Filter empty sentenses lines
+    return sentensesObj.filter((obj) => !!obj && typeof obj === 'object');
+  }
+
+  /**
+   * Split sentense if has multiple Dates
+   * @param {string} line    chat text line
+   * @returns {array}       array of splitted strings
+   */
+  sentenseSplitByDate(line) {
+    const regexpDateSameLine = /(\.[0-9]{2}\:[0-9]{2}\:[0-9]{2})/gi;
+
+    if (!this.hasRegexp(line, regexpDateSameLine)) return [line];
+
+    // Split sensente for multiple date in the same line:
+    // .00:00:00
+
+    let matchIndex;
+    let lastIndex = 0;
+    let newLine = line;
+    const senstenseSplitted = [];
+    do {
+      if (lastIndex === -1) break;
+
+      newLine = line.substring(
+        lastIndex,
+        matchIndex > -1 ? matchIndex : undefined,
+      );
+
+      // rm first char if === "."
+      if (newLine[0] === '.') newLine = newLine.substring(1);
+
+      lastIndex = matchIndex;
+      senstenseSplitted.push(newLine);
+    } while ((matchIndex = newLine.search(regexpDateSameLine)));
+
+    return senstenseSplitted;
+  }
+
+  /**
+   * Parse chatText line and retrieve an object with structured data
+   * @param {string} line chat text line
+   * @returns {object}
+   */
   defaultStrToObj(line) {
     const regexp = new RegExp(
       /([0-9]{2}\:[0-9]{2}\:[0-9]{2}) ((.+?\:)|Customer|Agent) (.+)/gi,
@@ -31,69 +99,49 @@ class SentenseParser {
     ).toLowerCase();
 
     return {
-      date: matches?.[1],
+      date: matches[1],
       mention,
-      sentense: matches?.[4],
+      sentense: matches[4],
       type,
     };
   }
 
-  hasRegexp(regexp, line) {
-    const matches = new RegExp(regexp).exec(line);
+  /**
+   * Check if given string contains regexp
+   * @param {string} str      chat text line or equivalent string
+   * @param {RegExp} regexp   regexp to search
+   * @returns {boolean}
+   */
+  hasRegexp(str, regexp) {
+    const matches = new RegExp(regexp).exec(str);
     return !!matches && !!matches.length;
   }
 
-  sentenseSplitByDate(line) {
-    const regexpDateSameLine = /(\.[0-9]{2}\:[0-9]{2}\:[0-9]{2})/gi;
-
-    if (!this.hasRegexp(regexpDateSameLine, line)) return [line];
-
-    // Split sensente when found thins like this in the same line:
-    // .00:00:00
-
-    let matchIndex;
-    let lastIndex = 0;
-    let newLine = line;
-    const senstenseSplitted = [];
-    while ((matchIndex = newLine.search(regexpDateSameLine))) {
-      if (lastIndex === -1) break;
-
-      newLine = line.substring(
-        lastIndex,
-        matchIndex > -1 ? matchIndex : undefined,
+  /**
+   * Load chat text from file
+   * @returns {string} content
+   */
+  chatLoader() {
+    try {
+      const loadedChat = fs.readFileSync(
+        `./mock/step_${this.sentenseType}.txt`,
+        'utf8',
       );
-
-      // rm first char if === "."
-      if (newLine[0] === '.') newLine = newLine.substring(1);
-
-      lastIndex = matchIndex;
-      senstenseSplitted.push(newLine);
+      console.log(
+        chalk.cyan(`
+Mocked chat: 💬
+--------
+${loadedChat}
+--------
+      `),
+      );
+      return loadedChat;
+    } catch (err) {
+      console.error(chalk.red(`${err}`));
     }
 
-    return senstenseSplitted;
+    return;
   }
-
-  sentenseStrToObj(line) {
-    const lineSplittedByDate = this.sentenseSplitByDate(line);
-    const sentensesObj = lineSplittedByDate.map((l) => this.defaultStrToObj(l));
-
-    // Filter empty lines
-    return sentensesObj.filter((obj) => !!obj && typeof obj === 'object');
-  }
-
-  parse() {
-    const chatText = this.chatLoader();
-    let chatTextSplitted;
-
-    chatTextSplitted = chatText
-      .split('\n')
-      .map((line) => this.sentenseStrToObj(line))
-      .flat();
-
-    return chatTextSplitted;
-  }
-
-  splitAt = (index) => (x) => [x.slice(0, index), x.slice(index)];
 }
 
-module.exports = SentenseParser;
+export default SentenseParser;
