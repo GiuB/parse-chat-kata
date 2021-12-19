@@ -9,7 +9,11 @@
     "inquirer": "^8.2.0"
   },
   "scripts": {
+    "test": "ava",
     "dev": "node index.js",
     "debug": "node --inspect-brk index.js"
+  },
+  "devDependencies": {
+    "ava": "^3.15.0"
   }
 }

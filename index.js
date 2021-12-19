@@ -1,16 +1,15 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 
-import SentenseParser from './src/SentenseParser.js';
+import SentenceParser from './src/SentenceParser.js';
 
 inquirer
   .prompt([
     {
       type: 'list',
-      name: 'sentenseType',
-      message: 'Choose sentense parser',
+      name: 'sentenceType',
+      message: 'Choose sentence parser',
       choices: [
-        { name: 'Step 0 (WRONG)', value: 0 },
         { name: 'Step 1 (single sentence)', value: 1 },
         { name: 'Step 2 (two sentences)', value: 2 },
         { name: 'Step 3 (two customer mentions as start)', value: 3 },
@@ -22,10 +21,15 @@ inquirer
     },
   ])
   .then((answers) => {
-    const sentenseParsed = new SentenseParser(answers.sentenseType).parse();
+    const sentenceLoader = new SentenceParser(answers.sentenceType);
+    const sentenceParsed = sentenceLoader.parse();
 
+    console.log(`${chalk.black.bgCyan('Mocked chat:')} 💬`);
+    console.log(
+      chalk.cyan(`-------\n${sentenceLoader.sourceContent}\n-------`),
+    );
     console.log(chalk.black.bgGreen('Parsed:') + ' 🤖');
-    console.log(sentenseParsed);
+    console.log(sentenceParsed);
   })
   .catch((error) => {
     let errOutput;

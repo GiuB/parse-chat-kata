@@ -2,18 +2,20 @@ import fs from 'fs';
 import chalk from 'chalk';
 
 /**
- * Class for parsing the sentense and return {array} of {object}
+ * Class for parsing the sentence and return {array} of {object}
  *
  * Usage:
- * new SentenseParser(<sentenseTypeNumber>).parse();
+ * new SentenceParser(<sentenceTypeNumber>).parse();
  *
- * @constructor @param {number} sentenseTypeNumber
+ * @constructor @param {number} sentenceTypeNumber
  */
-class SentenseParser {
-  sentenseType = 1;
+class SentenceParser {
+  sentenceType = 1;
+  sourceContent = '';
+  agentsFullName = ['Emanuele Querzola'];
 
-  constructor(sentenseType = 1) {
-    this.sentenseType = sentenseType;
+  constructor(type = 1) {
+    this.sentenceType = type;
   }
 
   /**
@@ -26,7 +28,7 @@ class SentenseParser {
 
     chatTextSplitted = chatText
       .split('\n')
-      .map((line) => this.sentenseStrToObj(line))
+      .map((line) => this.sentenceStrToObj(line))
       .flat();
 
     return chatTextSplitted;
@@ -37,20 +39,20 @@ class SentenseParser {
    * @param {string} line chat text line
    * @returns {array} of objects
    */
-  sentenseStrToObj(line) {
-    const lineSplittedByDate = this.sentenseSplitByDate(line);
-    const sentensesObj = lineSplittedByDate.map((l) => this.defaultStrToObj(l));
+  sentenceStrToObj(line) {
+    const lineSplittedByDate = this.sentenceSplitByDate(line);
+    const sentencesObj = lineSplittedByDate.map((l) => this.defaultStrToObj(l));
 
-    // Filter empty sentenses lines
-    return sentensesObj.filter((obj) => !!obj && typeof obj === 'object');
+    // Filter empty sentences lines
+    return sentencesObj.filter((obj) => !!obj && typeof obj === 'object');
   }
 
   /**
-   * Split sentense if has multiple Dates
+   * Split sentence if has multiple Dates
    * @param {string} line    chat text line
    * @returns {array}       array of splitted strings
    */
-  sentenseSplitByDate(line) {
+  sentenceSplitByDate(line) {
     const regexpDateSameLine = /(\.[0-9]{2}\:[0-9]{2}\:[0-9]{2})/gi;
 
     if (!this.hasRegexp(line, regexpDateSameLine)) return [line];
@@ -62,7 +64,7 @@ class SentenseParser {
     let lastIndex = 0;
     let newLine = line;
     const senstenseSplitted = [];
-    do {
+    while ((matchIndex = newLine.search(regexpDateSameLine))) {
       if (lastIndex === -1) break;
 
       newLine = line.substring(
@@ -75,7 +77,7 @@ class SentenseParser {
 
       lastIndex = matchIndex;
       senstenseSplitted.push(newLine);
-    } while ((matchIndex = newLine.search(regexpDateSameLine)));
+    }
 
     return senstenseSplitted;
   }
@@ -94,15 +96,12 @@ class SentenseParser {
     if (!matches) return null;
 
     const mention = `${matches[1]} ${matches[2] || matches[3]} `;
-    const type = (
-      ['Customer', 'Agent'].find((el) => mention.includes(el)) || 'Customer'
-    ).toLowerCase();
 
     return {
       date: matches[1],
       mention,
-      sentense: matches[4],
-      type,
+      sentence: matches[4],
+      type: this.typePrepare(matches, mention),
     };
   }
 
@@ -124,11 +123,11 @@ class SentenseParser {
   chatLoader() {
     try {
       const loadedChat = fs.readFileSync(
-        `./mock/step_${this.sentenseType}.txt`,
+        `./mock/step_${this.sentenceType}.txt`,
         'utf8',
       );
-      console.log(`${chalk.black.bgCyan('Mocked chat:')} 💬`);
-      console.log(chalk.cyan(`-------\n${loadedChat}\n-------`));
+
+      this.sourceContent = loadedChat;
       return loadedChat;
     } catch (err) {
       console.error(chalk.red(`${err}`));
@@ -136,6 +135,26 @@ class SentenseParser {
 
     return;
   }
+
+  /**
+   * Retrieve sentence type (agent || customer)
+   *
+   * @param {array} matches regexp matches
+   * @param {string} mentionStr mention string
+   * @returns {string} type
+   */
+  typePrepare(matches, mentionStr) {
+    let type = 'Customer';
+    const mentionPerson = (matches[3] || '').replace(':', '').trim();
+
+    if (
+      mentionStr.includes('Agent') ||
+      this.agentsFullName.includes(mentionPerson)
+    )
+      type = 'Agent';
+
+    return type.toLowerCase();
+  }
 }
 
-export default SentenseParser;
+export default SentenceParser;
