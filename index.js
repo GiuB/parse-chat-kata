@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 
-import SentenceParser from './src/SentenceParser.js';
+import SentenceParser from './src/SentenceParser';
 
 inquirer
   .prompt([

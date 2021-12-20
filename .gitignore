@@ -2,32 +2,9 @@
 
 # dependencies
 /node_modules
-/shared
-
-# testing
-/coverage
-
-# production
-app.config.js
-/build
-/dist
-/.next
 
 # misc
 .DS_Store
-.env
-.env.local
-.env._*
-.env.local._*
-!/**/.gitkeep
-/config.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-scss/**/*.css
-.vscode/
-.idea
-.cache/
-amp/
-*TODO*
-.history

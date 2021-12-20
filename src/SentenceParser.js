@@ -24,14 +24,11 @@ class SentenceParser {
    */
   parse() {
     const chatText = this.chatLoader();
-    let chatTextSplitted;
 
-    chatTextSplitted = chatText
+    return chatText
       .split('\n')
       .map((line) => this.sentenceStrToObj(line))
       .flat();
-
-    return chatTextSplitted;
   }
 
   /**
@@ -41,10 +38,10 @@ class SentenceParser {
    */
   sentenceStrToObj(line) {
     const lineSplittedByDate = this.sentenceSplitByDate(line);
-    const sentencesObj = lineSplittedByDate.map((l) => this.defaultStrToObj(l));
 
-    // Filter empty sentences lines
-    return sentencesObj.filter((obj) => !!obj && typeof obj === 'object');
+    return lineSplittedByDate
+      .map((l) => this.defaultStrToObj(l))
+      .filter((obj) => !!obj && typeof obj === 'object'); // Filter empty sentences lines
   }
 
   /**

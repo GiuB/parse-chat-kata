@@ -1,7 +1,33 @@
-Kata:
+## Description
+
+The following is a **TDD Kata**, an exercise in _coding_, _refactoring_ and _test-first_.
+
+The goal is to parse a string chat: given a string input, the program should produce an array of sentences as output, according to the following specification.
+
+## Source exercise:
+
 https://github.com/wonderflow-bv/parse-chat-kata/blob/master/ASSIGNMENT.md
 
-Terminal commands:
+## Installation
 
-- yarn dev
-- yarn debug: for vsCode debugging
+```bash
+$ yarn
+```
+
+Oppure
+
+```bash
+$ npm i
+```
+
+## Start the program
+
+```bash
+$ yarn dev
+```
+
+## Run all tests
+
+```bash
+$ yarn test
+```
