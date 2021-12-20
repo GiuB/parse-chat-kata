@@ -31,3 +31,13 @@ $ yarn dev
 ```bash
 $ yarn test
 ```
+
+## Notes
+
+Check mocked chat file in `./mocks/step_<X>.txt`
+
+Check expected test output in: `./mocks/expected/step_<X>.js`
+
+## License
+
+Published under [a MIT license](LICENSE.mit)
