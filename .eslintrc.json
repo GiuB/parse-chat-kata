@@ -1,9 +1,4 @@
 {
-  "env": {
-    "commonjs": true,
-    "es6": true,
-    "node": true
-  },
   "parser": "babel-eslint",
   "parserOptions": {
     "es6": true,
@@ -15,6 +10,7 @@
     "quotes": ["error", "single"]
   },
   "env": {
+    "commonjs": true,
     "browser": false,
     "node": true
   }
