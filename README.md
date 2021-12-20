@@ -28,7 +28,7 @@ $ yarn dev
 
 ## Tests
 
-The program use [a ava](https://github.com/avajs/ava)
+The program use [avajs](https://github.com/avajs/ava)
 
 ```bash
 $ yarn test
