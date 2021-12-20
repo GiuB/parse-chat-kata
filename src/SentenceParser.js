@@ -45,40 +45,6 @@ class SentenceParser {
   }
 
   /**
-   * Split sentence if has multiple Dates
-   * @param {string} line    chat text line
-   * @returns {array}       array of splitted strings
-   */
-  sentenceSplitByDate(line) {
-    const regexpDateSameLine = /(\.[0-9]{2}\:[0-9]{2}\:[0-9]{2})/gi;
-
-    if (!this.hasRegexp(line, regexpDateSameLine)) return [line];
-
-    // Split sensente for multiple date in the same line:
-    // .00:00:00
-    let matchIndex;
-    let lastIndex = 0;
-    let newLine = line;
-    const senstenseSplitted = [];
-    while ((matchIndex = newLine.search(regexpDateSameLine))) {
-      if (lastIndex === -1) break;
-
-      newLine = line.substring(
-        lastIndex,
-        matchIndex > -1 ? matchIndex + 1 : undefined,
-      );
-
-      // rm first char if === "."
-      if (newLine[0] === '.') newLine = newLine.substring(1);
-
-      lastIndex = matchIndex;
-      senstenseSplitted.push(newLine);
-    }
-
-    return senstenseSplitted;
-  }
-
-  /**
    * Parse chatText line and retrieve an object with structured data
    * @param {string} line chat text line
    * @returns {object}
@@ -99,6 +65,39 @@ class SentenceParser {
       sentence: matches[4],
       type: this.typePrepare(matches, mention),
     };
+  }
+
+  /**
+   * Split sentence if has multiple Dates
+   * @param {string} line     chat text line
+   * @returns {array}         array of splitted strings
+   */
+  sentenceSplitByDate(line) {
+    const regexpDateSameLine = /(\.[0-9]{2}\:[0-9]{2}\:[0-9]{2})/gi;
+
+    if (!this.hasRegexp(line, regexpDateSameLine)) return [line];
+
+    // Split sensentes checking multiple date with this format: .00:00:00
+    let matchIndex;
+    let lastIndex = 0;
+    let newLine = line;
+    const senstenseSplitted = [];
+    while ((matchIndex = newLine.search(regexpDateSameLine))) {
+      if (lastIndex === -1) break;
+
+      newLine = line.substring(
+        lastIndex,
+        matchIndex > -1 ? matchIndex + 1 : undefined,
+      );
+
+      // rm first char if === "."
+      if (newLine[0] === '.') newLine = newLine.substring(1);
+
+      lastIndex = matchIndex;
+      senstenseSplitted.push(newLine);
+    }
+
+    return senstenseSplitted;
   }
 
   /**
