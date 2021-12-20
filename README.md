@@ -26,7 +26,9 @@ $ npm i
 $ yarn dev
 ```
 
-## Run all tests
+## Tests
+
+The program use [a ava](https://github.com/avajs/ava)
 
 ```bash
 $ yarn test
@@ -40,4 +42,4 @@ Check expected test output in: `./mocks/expected/step_<X>.js`
 
 ## License
 
-Published under [a MIT license](LICENSE.mit)
+Published under [MIT license](LICENSE.mit)
